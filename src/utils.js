@@ -5,20 +5,29 @@ import pf from 'portfinder';
 import envPaths from 'env-paths';
 
 let configPath = '';
+let configFileName = 'sqlectron.json';
+let envPathName = 'Sqlectron';
+
+export function init({
+  fileName,
+  envName
+}) {
+  configFileName = fileName
+  envPathName = envName
+}
 
 export function getConfigPath() {
   if (configPath) {
     return configPath;
   }
 
-  const configName = 'sqlectron.json';
-  const oldConfigPath = path.join(homedir(), `.${configName}`);
+  const oldConfigPath = path.join(homedir(), `.${configFileName}`);
 
   if (fileExistsSync(oldConfigPath)) {
     configPath = oldConfigPath;
   } else {
-    const newConfigDir = envPaths('Sqlectron', { suffix: '' }).config;
-    configPath = path.join(newConfigDir, configName);
+    const newConfigDir = envPaths(envPathName, { suffix: '' }).config;
+    configPath = path.join(newConfigDir, configFileName);
   }
 
   return configPath;
@@ -87,7 +96,7 @@ export function readJSONFile(filename) {
 
 export function readJSONFileSync(filename) {
   const filePath = resolveHomePathToAbsolute(filename);
-  const data = fs.readFileSync(path.resolve(filePath), { enconding: 'utf-8' });
+  const data = fs.readFileSync(path.resolve(filePath), { encoding: 'utf-8' });
   return JSON.parse(data);
 }
 
